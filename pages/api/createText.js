@@ -3,12 +3,46 @@
 import {Configuration}from "openai";
 import {OpenAIApi} from "openai";
 
-
+var toSay = '';
 const configuration = new Configuration({
   apiKey: process.env.OPENAPIKEY,
 });
 const openai = new OpenAIApi(configuration);
 
+export default async function getTopic(e){
+  console.log(e)
+
+  if(e == "Friendship"){
+      toSay="Hello my friend";
+  }
+  console.log(toSay);
+
+    try{
+        const response = await fetch("/api/createText", {
+            method: "POST",
+            headers:{
+                "Content-Type":"application/json",
+            },
+            
+            body: JSON.stringify({p : toSay}),
+    
+        });
+
+        const data = await response.json();
+        if(response.status !== 200){
+            throw data.error || new Error(`reuqest failed with status code ${response.status}`);
+
+        }
+
+        setResult(data.result);
+    }catch(error){
+        console.error(error);
+        alert(error.message);
+    }
+}
+
+  
+/** 
 export default async function(req, res)
 {
   if(!configuration.apiKey){
@@ -63,3 +97,4 @@ export default async function(req, res)
     Friend: ${capitilizedCHAT} 
     You: `;
   }
+  */
